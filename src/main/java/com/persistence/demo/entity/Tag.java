@@ -1,7 +1,8 @@
 package com.persistence.demo.entity;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -32,7 +33,7 @@ public class Tag {
    * reference it from the Post class.
    */
   @ManyToMany(mappedBy = "tags", cascade = CascadeType.ALL)
-  private List<Post> posts = new ArrayList<>();
+  private Set<Post> posts = new HashSet<>();
 
   public Long getId() {
     return id;
@@ -58,11 +59,11 @@ public class Tag {
     this.description = description;
   }
 
-  public List<Post> getPosts() {
+  public Set<Post> getPosts() {
     return posts;
   }
 
-  public void setPosts(List<Post> posts) {
+  public void setPosts(Set<Post> posts) {
     this.posts = posts;
   }
 
