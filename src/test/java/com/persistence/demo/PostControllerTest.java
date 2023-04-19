@@ -74,7 +74,6 @@ public class PostControllerTest {
 		 * If we do not set all IDs in entities, we will not be able to fetch from
 		 * parent and target entity. This applies to 1-> * and * -> * mappings.
 		 * 
-		 * TODO - Move this mappings to setter of entities
 		 */
 		post1Comment.setId(222L);
 		post1Comment.setComment("Please add @Transactional on test method");
@@ -99,15 +98,10 @@ public class PostControllerTest {
 		// Set<Tag> p2Tags = new HashSet<>();
 
 		posts.add(p1);
-		p1.getPostComments().addAll(post1Comments);
-		post1Comment.setPost(p1);
-		post1Comment2.setPost(p1);
+		p1.addPostComment(post1Comment);
+		p1.addPostComment(post1Comment2);
 
-		p1Tags.add(t1);
-		p1Tags.add(t2);
-		p1.getTags().addAll(p1Tags);
-
-		t1.getPosts().addAll(posts);
+		p1.addTag(t1);
 
 		postRepository.save(p1);
 		System.out.println("##### After Inserting, posts size: " + postRepository.findAll().size());

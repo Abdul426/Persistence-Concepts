@@ -1,7 +1,7 @@
 package com.persistence.demo.entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -38,7 +38,7 @@ public class Post {
    */
   @JsonManagedReference
   @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-  Set<PostComment> postComments = new HashSet<>();;
+  List<PostComment> postComments = new ArrayList<>();;
 
   /*
    * Additionally, we have to configure how to model the relationship in the
@@ -56,7 +56,7 @@ public class Post {
    */
   @ManyToMany(cascade = CascadeType.ALL)
   @JoinTable(name = "post_tag", joinColumns = @JoinColumn(name = "post_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  private Set<Tag> tags = new HashSet<>();;
+  private List<Tag> tags = new ArrayList<>();;
 
   public Long getId() {
     return id;
@@ -74,20 +74,30 @@ public class Post {
     this.post = post;
   }
 
-  public Set<PostComment> getPostComments() {
+  public List<PostComment> getPostComments() {
     return postComments;
   }
 
-  public void setPostComments(Set<PostComment> postComments) {
+  public void setPostComments(List<PostComment> postComments) {
     this.postComments = postComments;
   }
 
-  public Set<Tag> getTags() {
+  public void addPostComment(PostComment postComment) {
+    this.postComments.add(postComment);
+    postComment.setPost(this);
+  }
+
+  public List<Tag> getTags() {
     return tags;
   }
 
-  public void setTags(Set<Tag> tags) {
+  public void setTags(List<Tag> tags) {
     this.tags = tags;
+  }
+
+  public void addTag(Tag tag) {
+    this.tags.add(tag);
+    tag.getPosts().add(this);
   }
 
   @Override
