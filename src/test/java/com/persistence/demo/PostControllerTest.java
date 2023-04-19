@@ -10,7 +10,10 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.persistence.demo.entity.Post;
 import com.persistence.demo.entity.PostComment;
+import com.persistence.demo.entity.Tag;
 import com.persistence.demo.repository.PostRepository;
+import com.persistence.demo.repository.TagRepository;
 import com.persistence.demo.service.PostService;
 
 @SpringBootTest
@@ -43,37 +48,71 @@ public class PostControllerTest {
 	@MockBean
 	private PostService postService;
 
-	private List<Post> posts = null;
+	@Autowired
+	private TagRepository tagRepository;
 
-	@Test
-	void contextLoads() {
-	}
+	private List<Post> postsFromDB = null;
 
 	// Data not loading from initialize.sql
 	@BeforeEach
 	@Sql(scripts = { "initialize.sql" })
 	public void beforeEach() {
 		System.out.println("##### Inserting Data");
-		System.out.println("##### " + postRepository.findAll().size());
-		Post p = new Post();
+		System.out.println("##### Before Inserting, posts size: " + postRepository.findAll().size());
+
+		Post p1 = new Post();
 		// We cannot set Id of an entity while using persistance framework, PF will pick
 		// from mentioned type
-		p.setId(22L);
-		p.setPost("Lazy loading issue in spring boot unit testing");
+		p1.setId(22L);
+		p1.setPost("Lazy loading issue in spring boot unit testing");
 
-		PostComment postComment = new PostComment();
-		// Persistence will not pick this
-		postComment.setId(222L);
-		postComment.setComment("Please add @Transactional on test method");
-		// postComment.setPost(p);
+		PostComment post1Comment = new PostComment();
 
-		Set<PostComment> pSet = new HashSet<>();
-		pSet.add(postComment);
-		p.setPostComments(pSet);
-		postRepository.save(p);
-		System.out.println("After Saving ##### " + postRepository.findAll().size());
-		posts = postRepository.findAll();
-		System.out.println("##### Entity0: " + posts.get(0));
+		/*
+		 * We cannot set id for an entity while saving. Persistence will pick based on
+		 * generation type
+		 * If we do not set all IDs in entities, we will not be able to fetch from
+		 * parent and target entity. This applies to 1-> * and * -> * mappings.
+		 * 
+		 * TODO - Move this mappings to setter of entities
+		 */
+		post1Comment.setId(222L);
+		post1Comment.setComment("Please add @Transactional on test method");
+
+		PostComment post1Comment2 = new PostComment();
+		post1Comment2.setComment("Ok Thanks");
+
+		Tag t1 = new Tag();
+		t1.setCode("SPRING_BOOT");
+		t1.setDescription("All spring boot related quetions");
+
+		Tag t2 = new Tag();
+		t2.setCode("SPRING_BOOT_JPA");
+		t2.setDescription("All spring boot jpa related quetions");
+
+		Set<Post> posts = new HashSet<>();
+		Set<PostComment> post1Comments = new HashSet<>();
+		post1Comments.add(post1Comment);
+		post1Comments.add(post1Comment2);
+
+		Set<Tag> p1Tags = new HashSet<>();
+		// Set<Tag> p2Tags = new HashSet<>();
+
+		posts.add(p1);
+		p1.getPostComments().addAll(post1Comments);
+		post1Comment.setPost(p1);
+		post1Comment2.setPost(p1);
+
+		p1Tags.add(t1);
+		p1Tags.add(t2);
+		p1.getTags().addAll(p1Tags);
+
+		t1.getPosts().addAll(posts);
+
+		postRepository.save(p1);
+		System.out.println("##### After Inserting, posts size: " + postRepository.findAll().size());
+		postsFromDB = postRepository.findAll();
+		System.out.println("##### Data: " + postsFromDB.get(0));
 	}
 
 	@AfterEach
@@ -92,13 +131,13 @@ public class PostControllerTest {
 	 */
 	@Test
 	@Transactional
-	void testFindAll() throws Exception {
+	void testFindAllPosts() throws Exception {
 
-		//Here postRepository.findAll() is not fetching child...
-		//Its loading post with post id : 1, we have not inserted this.
-		//Its not UT, bcz we are reaching DB.
+		// Here postRepository.findAll() is not fetching child...
+		// Its loading post with post id : 1, we have not inserted this.
+		// Its not UT, bcz we are reaching DB.
 		when(postService.getAllPosts())
-                .thenReturn(posts);
+				.thenReturn(postsFromDB);
 
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/posts"))
 				.andExpect(status().isOk()).andReturn();
@@ -108,6 +147,20 @@ public class PostControllerTest {
 		System.out.println(contentAsString);
 
 		assertEquals(contentAsString.contains("Transactional"), true);
+
+	}
+
+	@Test
+	@Transactional
+	public void testGetAllTags() {
+
+		System.out.println("\n\n\n STARTING testGetAllTags \n\n\n\n");
+
+		// MvcResult mvcResult =
+		// mockMvc.perform(MockMvcRequestBuilders.get(tagRepository.findAll()));
+		List<Tag> tags = tagRepository.findAll();
+		System.out.println(" TAGS :: " + tags);
+		System.out.println("\n\n\n End testGetAllTags \n\n\n\n");
 
 	}
 }
