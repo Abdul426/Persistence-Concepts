@@ -10,10 +10,7 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,9 +90,6 @@ public class PostControllerTest {
 		Set<PostComment> post1Comments = new HashSet<>();
 		post1Comments.add(post1Comment);
 		post1Comments.add(post1Comment2);
-
-		Set<Tag> p1Tags = new HashSet<>();
-		// Set<Tag> p2Tags = new HashSet<>();
 
 		posts.add(p1);
 		p1.addPostComment(post1Comment);
