@@ -33,3 +33,7 @@ git branch:
 git merge:
 
 - git merge <main> # This command merges the main branch chnages to current branch(topic)
+
+git rebase:
+
+- what is ?
