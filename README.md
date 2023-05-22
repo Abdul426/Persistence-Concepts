@@ -11,3 +11,4 @@ git pull: on the other hand does that AND brings (copy) those changes from the r
 git checkout:
 
 -
+a
