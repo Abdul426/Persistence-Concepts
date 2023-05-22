@@ -12,12 +12,10 @@ Always keep in mind that there generally are at least three copies of a project 
 
 git fetch: is the command that tells your local git to retrieve the latest meta-data info from the original (yet doesn’t do any file transferring. It’s more like just checking to see if there are any changes available).
 
-
 git pull: on the other hand does that AND brings (copy) those changes from the remote repository.
 
 - git status shows the diff between local and remote repos only once we do 'git fetch'. Before that local repo is not aware of remote changes.
 - git branch --set-upstream-to origin/topic2 should be set to see the changes from remote when using git status command.
-
 
 git checkout:
 
@@ -31,6 +29,7 @@ git branch:
   Ex: topic2 created from topic1, topic2 imports all ongoing changes from topic1. Once we commit topic2 the changes will be saved into topic2 and topic1 will not have the changes.
 
 -
-  
+
 git merge:
-  - abcd
+
+- git merge <main> # This command merges the main branch chnages to current branch(topic)
