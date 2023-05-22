@@ -29,3 +29,6 @@ git branch:
   Ex: topic2 created from topic1, topic2 imports all ongoing changes from topic1. Once we commit topic2 the changes will be saved into topic2 and topic1 will not have the changes.
 
 -
+  
+git merge:
+  - 
