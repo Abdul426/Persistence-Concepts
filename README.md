@@ -12,10 +12,12 @@ Always keep in mind that there generally are at least three copies of a project 
 
 git fetch: is the command that tells your local git to retrieve the latest meta-data info from the original (yet doesn’t do any file transferring. It’s more like just checking to see if there are any changes available).
 
+
+git pull: on the other hand does that AND brings (copy) those changes from the remote repository.
+
 - git status shows the diff between local and remote repos only once we do 'git fetch'. Before that local repo is not aware of remote changes.
 - git branch --set-upstream-to origin/topic2 should be set to see the changes from remote when using git status command.
 
-git pull: on the other hand does that AND brings (copy) those changes from the remote repository. My Chnage Here for merge conf2
 
 git checkout:
 
