@@ -37,3 +37,6 @@ git merge:
 git rebase:
 
 - what is ?
+  
+git switch
+git checkout
